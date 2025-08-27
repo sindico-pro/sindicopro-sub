@@ -1,54 +1,253 @@
-# SubCrew Crew
+# 🏢 Sub (Subsíndico IA) - Chat Básico
 
-Welcome to the SubCrew Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+Bem-vindo ao **Sub** (Subsíndico IA), um assistente de inteligência artificial especializado em gestão condominial. Esta é a versão inicial com chat básico, que será consumida pelo projeto Next.js do Sindico Pro.
 
-## Installation
+## 🎯 Sobre o Projeto
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+O **Sub** é um assistente IA que ajuda síndicos e administradores de condomínios com:
 
-First, if you haven't already, install uv:
+- 📋 Orientações sobre legislação condominial
+- 🔧 Dicas de manutenção predial
+- 💰 Gestão financeira
+- 📢 Estratégias de comunicação
+- 🛠️ Resolução de problemas comuns
 
-```bash
-pip install uv
-```
+## 🚀 Início Rápido
 
-Next, navigate to your project directory and install the dependencies:
-
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
-
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/sub_crew/config/agents.yaml` to define your agents
-- Modify `src/sub_crew/config/tasks.yaml` to define your tasks
-- Modify `src/sub_crew/crew.py` to add your own logic, tools and specific args
-- Modify `src/sub_crew/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+### 1. **Instalação das Dependências**
 
 ```bash
-$ crewai run
+# Instalar dependências Python
+pip install -r requirements.txt
 ```
 
-This command initializes the sub-crew Crew, assembling the agents and assigning them tasks as defined in your configuration.
+### 2. **Configuração do Ambiente**
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```bash
+# Copiar arquivo de exemplo
+cp env.example .env
 
-## Understanding Your Crew
+# Editar o arquivo .env com suas configurações
+# OBRIGATÓRIO: Adicionar sua OPENAI_API_KEY
+```
 
-The sub-crew Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+### 3. **Executar a API**
 
-## Support
+```bash
+# Opção 1: Usando o script
+python run_api.py
 
-For support, questions, or feedback regarding the SubCrew Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+# Opção 2: Usando uvicorn diretamente
+uvicorn src.sub_crew.api.app:app --reload --host 0.0.0.0 --port 8000
+```
 
-Let's create wonders together with the power and simplicity of crewAI.
+### 4. **Testar a API**
+
+A API estará disponível em:
+
+- 🌐 **API**: http://localhost:8000
+- 📚 **Documentação**: http://localhost:8000/docs
+- ❤️ **Health Check**: http://localhost:8000/api/chat/health
+
+## 📡 Endpoints da API
+
+### **POST /api/chat/message**
+
+Envia uma mensagem para o Sub.
+
+**Request:**
+
+```json
+{
+  "message": "Olá Sub, como você pode me ajudar?",
+  "user_id": "user123",
+  "condo_id": "condo456",
+  "context": {
+    "user_role": "sindico",
+    "condo_type": "residencial"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "response": "Olá! Sou o Sub, seu assistente especializado em gestão condominial...",
+    "message_id": "msg789",
+    "timestamp": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+### **GET /api/chat/health**
+
+Verifica se a API está funcionando.
+
+### **GET /api/chat/providers**
+
+Lista os provedores de IA disponíveis.
+
+### **GET /docs**
+
+Documentação interativa da API (Swagger UI).
+
+## 🔧 Configuração
+
+### Variáveis de Ambiente (.env)
+
+```bash
+# AI Configuration
+# Provedor de IA padrão (gemini ou openai)
+DEFAULT_AI_PROVIDER=gemini
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Google AI Configuration
+GOOGLE_AI_API_KEY=your_google_ai_api_key_here
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+DEBUG=True
+
+# CORS Configuration
+ALLOWED_ORIGINS=http://localhost:3000,https://sindicopro.com
+
+# Logging
+LOG_LEVEL=INFO
+```
+
+## 🧪 Testando a API
+
+### Usando curl
+
+```bash
+# Teste básico
+curl -X POST "http://localhost:8000/api/chat/message" \
+     -H "Content-Type: application/json" \
+     -d '{"message": "Olá Sub!", "user_id": "test123"}'
+
+# Health check
+curl "http://localhost:8000/api/chat/health"
+```
+
+### Usando Python
+
+```python
+import requests
+
+# Enviar mensagem
+response = requests.post(
+    "http://localhost:8000/api/chat/message",
+    json={
+        "message": "Olá Sub!",
+        "user_id": "test123"
+    }
+)
+
+print(response.json())
+```
+
+## 🔗 Integração com Next.js
+
+### Exemplo de uso no frontend
+
+```typescript
+// services/subApi.ts
+const SUB_API_URL =
+  process.env.NEXT_PUBLIC_SUB_API_URL || "http://localhost:8000";
+
+export interface ChatMessage {
+  message: string;
+  user_id: string;
+  condo_id?: string;
+  context?: Record<string, any>;
+}
+
+export const sendMessageToSub = async (message: ChatMessage) => {
+  const response = await fetch(`${SUB_API_URL}/api/chat/message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao enviar mensagem para o Sub");
+  }
+
+  return response.json();
+};
+```
+
+## 📁 Estrutura do Projeto
+
+```
+sindicopro-sub/
+├── docs/                          # Documentação
+│   ├── SUB_PLANO_IMPLEMENTACAO.md
+│   ├── CHAT_BASICO_API.md
+│   └── ...
+├── src/
+│   └── sub_crew/
+│       ├── api/                   # API FastAPI
+│       │   ├── app.py            # Aplicação principal
+│       │   ├── routes/           # Rotas da API
+│       │   ├── models/           # Schemas Pydantic
+│       │   └── services/         # Lógica de negócio
+│       └── ...
+├── requirements.txt               # Dependências Python
+├── env.example                   # Exemplo de configuração
+├── run_api.py                   # Script para executar
+└── README.md
+```
+
+## 🎯 Próximos Passos
+
+### Fase 1 - Chat Básico ✅
+
+- [x] API FastAPI básica
+- [x] Integração com OpenAI
+- [x] Endpoints de chat
+- [x] Documentação da API
+
+### Fase 2 - Melhorias
+
+- [ ] Histórico de conversas
+- [ ] Contexto de usuário
+- [ ] Validações avançadas
+- [ ] Logs e monitoramento
+
+### Fase 3 - Sistema Multi-Agente
+
+- [ ] Agentes especializados
+- [ ] Coordenação entre agentes
+- [ ] Ferramentas especializadas
+- [ ] Base de conhecimento
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📞 Suporte
+
+- **Documentação**: `/docs` na API
+- **Issues**: GitHub Issues
+- **Email**: [seu-email@exemplo.com]
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+---
+
+**Sub (Subsíndico IA)** - Seu assistente especializado em gestão condominial! 🏢🤖
