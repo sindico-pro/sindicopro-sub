@@ -1,17 +1,28 @@
-research_task:
+question_in_context:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
-  expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    Você vai precisar analisar a pergunta que foi feita e determinar o assunto
+    dela, se o assunto for sobre o mercado condominial brasileiro então você
+    poderá seguir com a resposta, se não for, você deve responder que não sabe
+    como responder a pergunta.
 
-reporting_task:
-  description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Aqui está a pergunta: {question}
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    Um resposta precisa e bem estrutura, fundamentada, com informações relevantes,
+    com um tom bem amigável e que faz sentido para um condomínio brasileiro.
+  agent: sub
+
+question_definition:
+  description: >
+    Você deve analisar a pergunta feita e determinar se é para apenas responder
+    algo ou executar algo de alguma forma, se for apenas para responser você
+    deve delegar a tarefa para o agente answering_questions_specialist se for
+    para executar algo, você deve delegar a tarefa para o agente do determinado
+    recurso que foi mencionado na pergunta.
+
+    Aqui está a pergunta: {question}
+  expected_output: >
+    Retornar o determinado agente que deve ser delegado para a tarefa.
+  agent: sub
+
+
+
