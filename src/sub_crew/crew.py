@@ -5,7 +5,12 @@ from crewai_tools import (
   WebsiteSearchTool
 )
 
-llm = LLM(model="gemini-2.0-flash", temperature=0, api_key=os.getenv("GEMINI_API_KEY"))
+llm = LLM(
+  model="gemini/gemini-2.0-flash-exp", 
+  temperature=0,
+  api_key=os.getenv("GEMINI_API_KEY"),
+  provider="google"
+)
 
 @CrewBase
 class SubCrew:

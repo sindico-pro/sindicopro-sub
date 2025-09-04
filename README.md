@@ -1,16 +1,18 @@
-# 🏢 Sub (Subsíndico IA) - Chat Básico
+# 🏢 Sub (Subsíndico IA) - Sistema Multi-Agente com CrewAI
 
-Bem-vindo ao **Sub** (Subsíndico IA), um assistente de inteligência artificial especializado em gestão condominial. Esta é a versão inicial com chat básico, que será consumida pelo projeto Next.js do Sindico Pro.
+Bem-vindo ao **Sub** (Subsíndico IA), um assistente de inteligência artificial especializado em gestão condominial. Esta é a versão inicial com sistema multi-agente usando CrewAI, que será consumida pelo projeto Next.js do Sindico Pro.
 
 ## 🎯 Sobre o Projeto
 
-O **Sub** é um assistente IA que ajuda síndicos e administradores de condomínios com:
+O **Sub** é um assistente IA multi-agente que ajuda síndicos e administradores de condomínios com:
 
-- 📋 Orientações sobre legislação condominial
-- 🔧 Dicas de manutenção predial
-- 💰 Gestão financeira
-- 📢 Estratégias de comunicação
-- 🛠️ Resolução de problemas comuns
+- 🤖 **Agentes Especializados**: Sistema de múltiplos agentes coordenados
+- 📋 **Orientações Legais**: Consultas sobre legislação condominial
+- 🔧 **Manutenção Predial**: Dicas e orientações técnicas
+- 💰 **Gestão Financeira**: Aconselhamento sobre finanças condominiais
+- 📢 **Comunicação**: Estratégias para melhorar a comunicação
+- 🛠️ **Resolução de Problemas**: Análise e soluções para questões comuns
+- 🌐 **Pesquisa Web**: Busca de informações atualizadas na internet
 
 ## 🚀 Início Rápido
 
@@ -28,17 +30,20 @@ pip install -r requirements.txt
 cp env.example .env
 
 # Editar o arquivo .env com suas configurações
-# OBRIGATÓRIO: Adicionar sua OPENAI_API_KEY
+# OBRIGATÓRIO: Adicionar sua GEMINI_API_KEY
+# Obtenha sua chave em: https://aistudio.google.com/app/apikey
 ```
 
-### 3. **Executar a API**
+### 3. **Executar o Sub Crew**
 
 ```bash
-# Opção 1: Usando o script
-python run_api.py
+# Com o ambiente virtual ativado
+source .venv/bin/activate.fish  # Para fish shell
+# ou
+source .venv/bin/activate       # Para bash/zsh
 
-# Opção 2: Usando uvicorn diretamente
-uvicorn src.sub_crew.api.app:app --reload --host 0.0.0.0 --port 8000
+# Executar o comando
+poetry run sub_crew
 ```
 
 ### 4. **Testar a API**
@@ -106,8 +111,8 @@ DEFAULT_AI_PROVIDER=gemini
 # OpenAI Configuration
 OPENAI_API_KEY=your_openai_api_key_here
 
-# Google AI Configuration
-GOOGLE_AI_API_KEY=your_google_ai_api_key_here
+# Google AI Configuration (Google AI Studio)
+GEMINI_API_KEY=your_gemini_api_key_here
 
 # API Configuration
 API_HOST=0.0.0.0
@@ -190,45 +195,43 @@ export const sendMessageToSub = async (message: ChatMessage) => {
 ```
 sindicopro-sub/
 ├── docs/                          # Documentação
-│   ├── SUB_PLANO_IMPLEMENTACAO.md
-│   ├── CHAT_BASICO_API.md
-│   └── ...
+├── knowledge/                     # Base de conhecimento
 ├── src/
 │   └── sub_crew/
-│       ├── api/                   # API FastAPI
-│       │   ├── app.py            # Aplicação principal
-│       │   ├── routes/           # Rotas da API
-│       │   ├── models/           # Schemas Pydantic
-│       │   └── services/         # Lógica de negócio
-│       └── ...
-├── requirements.txt               # Dependências Python
+│       ├── config/               # Configurações dos agentes e tarefas
+│       │   ├── agents.yaml       # Configuração dos agentes
+│       │   └── tasks.yaml        # Configuração das tarefas
+│       ├── tools/                # Ferramentas customizadas
+│       ├── crew.py               # Definição da crew principal
+│       └── main.py               # Ponto de entrada da aplicação
+├── pyproject.toml                # Configuração do Poetry
+├── poetry.lock                   # Lock das dependências
 ├── env.example                   # Exemplo de configuração
-├── run_api.py                   # Script para executar
 └── README.md
 ```
 
 ## 🎯 Próximos Passos
 
-### Fase 1 - Chat Básico ✅
+### Fase 1 - Sistema Multi-Agente com CrewAI ✅
 
-- [x] API FastAPI básica
-- [x] Integração com OpenAI
-- [x] Endpoints de chat
-- [x] Documentação da API
+- [x] Configuração básica do CrewAI
+- [x] Agentes especializados em gestão condominial
+- [x] Integração com Google Gemini
+- [x] Ferramentas de busca web
 
 ### Fase 2 - Melhorias
 
+- [ ] Base de conhecimento condominial
 - [ ] Histórico de conversas
 - [ ] Contexto de usuário
 - [ ] Validações avançadas
+
+### Fase 3 - API e Integração
+
+- [ ] API REST para integração com frontend
+- [ ] Sistema de autenticação
 - [ ] Logs e monitoramento
-
-### Fase 3 - Sistema Multi-Agente
-
-- [ ] Agentes especializados
-- [ ] Coordenação entre agentes
-- [ ] Ferramentas especializadas
-- [ ] Base de conhecimento
+- [ ] Deploy em produção
 
 ## 🤝 Contribuição
 
