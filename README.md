@@ -1,256 +1,379 @@
-# 🏢 Sub (Subsíndico IA) - Sistema Multi-Agente com CrewAI
+# Síndico PRO Chatbot
 
-Bem-vindo ao **Sub** (Subsíndico IA), um assistente de inteligência artificial especializado em gestão condominial. Esta é a versão inicial com sistema multi-agente usando CrewAI, que será consumida pelo projeto Next.js do Sindico Pro.
+Assistente virtual especializado em questões condominiais brasileiras, desenvolvido com CrewAI e FastAPI.
 
-## 🎯 Sobre o Projeto
+## 🏢 Sobre o Projeto
 
-O **Sub** é um assistente IA multi-agente que ajuda síndicos e administradores de condomínios com:
+O Síndico PRO Chatbot é um assistente virtual inteligente que utiliza agentes de IA colaborativos para responder questões relacionadas ao mercado condominial brasileiro. O sistema mantém contexto de conversa, permitindo interações naturais e contínuas.
 
-- 🤖 **Agentes Especializados**: Sistema de múltiplos agentes coordenados
-- 📋 **Orientações Legais**: Consultas sobre legislação condominial
-- 🔧 **Manutenção Predial**: Dicas e orientações técnicas
-- 💰 **Gestão Financeira**: Aconselhamento sobre finanças condominiais
-- 📢 **Comunicação**: Estratégias para melhorar a comunicação
-- 🛠️ **Resolução de Problemas**: Análise e soluções para questões comuns
-- 🌐 **Pesquisa Web**: Busca de informações atualizadas na internet
+## 🚀 Características
 
-## 🚀 Início Rápido
+- **Agentes Especializados**: Sistema de agentes colaborativos usando CrewAI
+- **Contexto de Conversa**: Mantém histórico das mensagens para respostas contextuais
+- **API REST**: Interface FastAPI para integração com frontend
+- **Google Gemini**: Modelo de linguagem avançado para respostas precisas
+- **Memória Redis**: Sistema de armazenamento de conversas em Redis
+- **CORS Configurado**: Pronto para integração com Next.js
+- **Alta Performance**: Redis para máxima escalabilidade e velocidade
 
-### 1. **Instalação das Dependências**
+## 🛠️ Tecnologias
 
-```bash
-# Instalar dependências Python
-pip install -r requirements.txt
-```
+- **Python 3.10+**
+- **CrewAI**: Framework para agentes colaborativos
+- **FastAPI**: Framework web moderno e rápido
+- **Google Gemini**: Modelo de linguagem
+- **Pydantic**: Validação de dados
+- **Uvicorn**: Servidor ASGI
+- **Redis**: Cache e armazenamento de conversas
 
-### 2. **Configuração do Ambiente**
+## 📦 Instalação
 
-```bash
-# Copiar arquivo de exemplo
-cp env.example .env
-
-# Editar o arquivo .env com suas configurações
-# OBRIGATÓRIO: Adicionar sua GEMINI_API_KEY
-# Obtenha sua chave em: https://aistudio.google.com/app/apikey
-```
-
-### 3. **Executar o Sub Crew**
+### 1. Clone o repositório
 
 ```bash
-# Com o ambiente virtual ativado
-source .venv/bin/activate.fish  # Para fish shell
-# ou
-source .venv/bin/activate       # Para bash/zsh
-
-# Executar o comando
-poetry run sub_crew
+git clone <repository-url>
+cd sindicopro-sub
 ```
 
-### 4. **Testar a API**
+### 2. Crie um ambiente virtual
 
-A API estará disponível em:
+```bash
+python -m venv venv
+source venv/bin/activate  # No Windows: venv\Scripts\activate
+```
 
-- 🌐 **API**: http://localhost:8000
-- 📚 **Documentação**: http://localhost:8000/docs
-- ❤️ **Health Check**: http://localhost:8000/api/chat/health
+### 3. Instale as dependências
 
-## 📡 Endpoints da API
+```bash
+pip install -e .
+```
 
-### **POST /api/chat/message**
+### 4. Configure o Redis
 
-Envia uma mensagem para o Sub.
+#### **Opção A: Redis Local (Desenvolvimento)**
 
-**Request:**
+```bash
+# Instalar Redis
+# Ubuntu/Debian: sudo apt install redis-server
+# macOS: brew install redis
+# Docker: docker run -d -p 6379:6379 redis:7-alpine
 
-```json
+# Iniciar Redis
+redis-server
+```
+
+#### **Opção B: AWS MemoryDB (Produção)**
+
+```bash
+# Usar seu cluster AWS MemoryDB
+# Endpoint: clustercfg.sub-redis.lueflv.memorydb.us-east-1.amazonaws.com:6379
+```
+
+### 5. Configure as variáveis de ambiente
+
+#### **Para Redis Local:**
+
+```bash
+# Copie o arquivo de exemplo
+cp config.env.example .env
+
+# Edite o arquivo .env e configure sua chave da API
+export GEMINI_API_KEY="sua_chave_do_google_gemini"
+
+# Configuração Redis local
+export REDIS_URL="redis://localhost:6379"
+export REDIS_DB="0"
+export REDIS_KEY_PREFIX="sindico_pro:"
+```
+
+#### **Para AWS MemoryDB:**
+
+```bash
+# Copie o arquivo de configuração AWS
+cp config.aws.env .env
+
+# Edite o arquivo .env e configure sua chave da API
+export GEMINI_API_KEY="sua_chave_do_google_gemini"
+
+# Configuração AWS MemoryDB
+export REDIS_URL="redis://clustercfg.sub-redis.lueflv.memorydb.us-east-1.amazonaws.com:6379"
+export REDIS_DB="0"
+export REDIS_KEY_PREFIX="sindico_pro:"
+```
+
+## 🚀 Uso
+
+### Comandos Disponíveis
+
+```bash
+# Executar com pergunta padrão
+sub_crew
+
+# Modo chat interativo
+sub_crew chat "Sua pergunta aqui"
+
+# Iniciar API
+sub_crew api
+
+# Treinar o crew
+sub_crew train 10 training_data.json
+
+# Testar o crew
+sub_crew test 5 "gpt-4"
+
+# Replay de uma tarefa
+sub_crew replay task_id_123
+```
+
+### Iniciar a API
+
+```bash
+# Opção 1: Usando o script de inicialização
+python start_api.py
+
+# Opção 2: Usando uvicorn diretamente
+uvicorn src.sub_crew.api:app --host 0.0.0.0 --port 8000 --reload
+
+# Opção 3: Usando o comando do projeto
+sub_crew api
+```
+
+### Acessar a documentação
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **Health Check**: http://localhost:8000/health
+
+## 📡 API Endpoints
+
+### Chat
+
+```http
+POST /chat
+Content-Type: application/json
+
 {
-  "message": "Olá Sub, como você pode me ajudar?",
-  "user_id": "user123",
-  "condo_id": "condo456",
-  "context": {
-    "user_role": "sindico",
-    "condo_type": "residencial"
-  }
+  "message": "Eu preciso contratar um contador?",
+  "session_id": "optional-session-id",
+  "user_id": "optional-user-id"
 }
 ```
 
-**Response:**
+### Histórico de Conversa
 
-```json
-{
-  "success": true,
-  "data": {
-    "response": "Olá! Sou o Sub, seu assistente especializado em gestão condominial...",
-    "message_id": "msg789",
-    "timestamp": "2024-01-15T10:30:00Z"
-  }
-}
+```http
+GET /sessions/{session_id}/history
 ```
 
-### **GET /api/chat/health**
+### Listar Sessões
 
-Verifica se a API está funcionando.
+```http
+GET /sessions
+```
 
-### **GET /api/chat/providers**
+### Limpar Conversa
 
-Lista os provedores de IA disponíveis.
+```http
+DELETE /sessions/{session_id}
+```
 
-### **GET /docs**
+## 🔧 Integração com Next.js
 
-Documentação interativa da API (Swagger UI).
-
-## 🔧 Configuração
-
-### Variáveis de Ambiente (.env)
+### 1. Instalar dependências no frontend
 
 ```bash
-# AI Configuration
-# Provedor de IA padrão (gemini ou openai)
-DEFAULT_AI_PROVIDER=gemini
-
-# OpenAI Configuration
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Google AI Configuration (Google AI Studio)
-GEMINI_API_KEY=your_gemini_api_key_here
-
-# API Configuration
-API_HOST=0.0.0.0
-API_PORT=8000
-DEBUG=True
-
-# CORS Configuration
-ALLOWED_ORIGINS=http://localhost:3000,https://sindicopro.com
-
-# Logging
-LOG_LEVEL=INFO
+npm install axios
 ```
 
-## 🧪 Testando a API
+### 2. Configurar cliente HTTP
 
-### Usando curl
+```javascript
+// lib/chatbot.js
+import axios from "axios";
 
-```bash
-# Teste básico
-curl -X POST "http://localhost:8000/api/chat/message" \
-     -H "Content-Type: application/json" \
-     -d '{"message": "Olá Sub!", "user_id": "test123"}'
+const API_BASE_URL = "http://localhost:8000";
 
-# Health check
-curl "http://localhost:8000/api/chat/health"
-```
-
-### Usando Python
-
-```python
-import requests
-
-# Enviar mensagem
-response = requests.post(
-    "http://localhost:8000/api/chat/message",
-    json={
-        "message": "Olá Sub!",
-        "user_id": "test123"
+export const chatAPI = {
+  async sendMessage(message, sessionId = null) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/chat`, {
+        message,
+        session_id: sessionId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+      throw error;
     }
-)
+  },
 
-print(response.json())
-```
-
-## 🔗 Integração com Next.js
-
-### Exemplo de uso no frontend
-
-```typescript
-// services/subApi.ts
-const SUB_API_URL =
-  process.env.NEXT_PUBLIC_SUB_API_URL || "http://localhost:8000";
-
-export interface ChatMessage {
-  message: string;
-  user_id: string;
-  condo_id?: string;
-  context?: Record<string, any>;
-}
-
-export const sendMessageToSub = async (message: ChatMessage) => {
-  const response = await fetch(`${SUB_API_URL}/api/chat/message`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(message),
-  });
-
-  if (!response.ok) {
-    throw new Error("Erro ao enviar mensagem para o Sub");
-  }
-
-  return response.json();
+  async getHistory(sessionId) {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/sessions/${sessionId}/history`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao obter histórico:", error);
+      throw error;
+    }
+  },
 };
 ```
 
-## 📁 Estrutura do Projeto
+### 3. Componente de Chat
+
+```jsx
+// components/Chat.jsx
+import { useState, useEffect } from "react";
+import { chatAPI } from "../lib/chatbot";
+
+export default function Chat() {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [sessionId, setSessionId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    setLoading(true);
+    const userMessage = { sender: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      const response = await chatAPI.sendMessage(input, sessionId);
+      setSessionId(response.session_id);
+
+      const botMessage = {
+        sender: "assistant",
+        content: response.response,
+      };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Erro:", error);
+    } finally {
+      setLoading(false);
+      setInput("");
+    }
+  };
+
+  return (
+    <div className="chat-container">
+      <div className="messages">
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.sender}`}>
+            {msg.content}
+          </div>
+        ))}
+      </div>
+      <div className="input-area">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+          placeholder="Digite sua pergunta sobre condomínios..."
+          disabled={loading}
+        />
+        <button onClick={sendMessage} disabled={loading}>
+          {loading ? "Enviando..." : "Enviar"}
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+## 🧠 Sistema de Memória
+
+O chatbot mantém contexto das conversas através de:
+
+- **Armazenamento Local**: Arquivos JSON para persistência
+- **Sessões**: Cada conversa tem um ID único
+- **Histórico**: Últimas 10 mensagens são consideradas no contexto
+- **Limpeza Automática**: Sessões antigas são removidas automaticamente
+
+## 🔧 Configuração Avançada
+
+### Variáveis de Ambiente
+
+```bash
+# API do Google Gemini
+GEMINI_API_KEY=your_api_key
+
+# Servidor
+API_HOST=0.0.0.0
+API_PORT=8000
+
+# Memória
+MEMORY_STORAGE_PATH=memory_data
+
+# CORS
+CORS_ORIGINS=http://localhost:3000,https://localhost:3000
+
+# Limpeza de sessões (dias)
+SESSION_CLEANUP_DAYS=30
+```
+
+### Personalização dos Agentes
+
+Edite os arquivos de configuração:
+
+- `src/sub_crew/config/agents.yaml`: Configuração dos agentes
+- `src/sub_crew/config/tasks.yaml`: Configuração das tarefas
+
+## 🧪 Testes
+
+```bash
+# Testar o crew diretamente
+python -m src.sub_crew.main
+
+# Testar a API
+curl -X POST "http://localhost:8000/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Eu preciso contratar um contador?"}'
+```
+
+## 📝 Estrutura do Projeto
 
 ```
 sindicopro-sub/
-├── docs/                          # Documentação
-├── knowledge/                     # Base de conhecimento
-├── src/
-│   └── sub_crew/
-│       ├── config/               # Configurações dos agentes e tarefas
-│       │   ├── agents.yaml       # Configuração dos agentes
-│       │   └── tasks.yaml        # Configuração das tarefas
-│       ├── tools/                # Ferramentas customizadas
-│       ├── crew.py               # Definição da crew principal
-│       └── main.py               # Ponto de entrada da aplicação
-├── pyproject.toml                # Configuração do Poetry
-├── poetry.lock                   # Lock das dependências
-├── env.example                   # Exemplo de configuração
-└── README.md
+├── src/sub_crew/
+│   ├── api.py              # API FastAPI
+│   ├── crew.py             # Definição do crew
+│   ├── main.py             # Ponto de entrada original
+│   ├── memory.py           # Sistema de memória
+│   ├── config/
+│   │   ├── agents.yaml     # Configuração dos agentes
+│   │   └── tasks.yaml      # Configuração das tarefas
+│   └── tools/
+│       └── custom_tool.py  # Ferramentas personalizadas
+├── memory_data/            # Dados de memória (criado automaticamente)
+├── start_api.py            # Script de inicialização
+├── config.env.example      # Exemplo de configuração
+└── README.md              # Este arquivo
 ```
-
-## 🎯 Próximos Passos
-
-### Fase 1 - Sistema Multi-Agente com CrewAI ✅
-
-- [x] Configuração básica do CrewAI
-- [x] Agentes especializados em gestão condominial
-- [x] Integração com Google Gemini
-- [x] Ferramentas de busca web
-
-### Fase 2 - Melhorias
-
-- [ ] Base de conhecimento condominial
-- [ ] Histórico de conversas
-- [ ] Contexto de usuário
-- [ ] Validações avançadas
-
-### Fase 3 - API e Integração
-
-- [ ] API REST para integração com frontend
-- [ ] Sistema de autenticação
-- [ ] Logs e monitoramento
-- [ ] Deploy em produção
 
 ## 🤝 Contribuição
 
-1. Faça um fork do projeto
+1. Fork o projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
 3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📞 Suporte
-
-- **Documentação**: `/docs` na API
-- **Issues**: GitHub Issues
-- **Email**: [seu-email@exemplo.com]
-
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
+## 📞 Suporte
+
+Para suporte e dúvidas, entre em contato:
+
+- **Email**: rodrigorael53@gmail.com
+- **GitHub Issues**: [Criar uma issue](https://github.com/seu-usuario/sindicopro-sub/issues)
+
 ---
 
-**Sub (Subsíndico IA)** - Seu assistente especializado em gestão condominial! 🏢🤖
+**Desenvolvido com ❤️ para a comunidade condominial brasileira**

@@ -24,5 +24,19 @@ question_definition:
     Retornar o determinado agente que deve ser delegado para a tarefa.
   agent: sub
 
+contextual_response:
+  description: >
+    Você deve fornecer uma resposta contextual e completa sobre questões condominiais brasileiras.
+    Considere o histórico da conversa para manter coerência e continuidade.
+    Use o contexto fornecido para entender melhor a situação e dar uma resposta mais precisa.
+    
+    Contexto da conversa: {conversation_history}
+    Pergunta atual: {question}
+  expected_output: >
+    Uma resposta completa, contextualizada e amigável em português brasileiro,
+    considerando o histórico da conversa e fornecendo informações relevantes
+    sobre questões condominiais.
+  agent: answering_questions_specialist
+
 
 

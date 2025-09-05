@@ -4,7 +4,14 @@ version = "0.1.0"
 description = "sub-crew using crewAI"
 authors = [{ name = "Rodrigo Rael", email = "rodrigorael53@gmail.com" }]
 requires-python = ">=3.10,<3.13"
-dependencies = ["crewai[tools]>=0.165.1,<1.0.0"]
+dependencies = [
+  "crewai[tools]>=0.165.1,<1.0.0",
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+  "pydantic>=2.0.0",
+  "redis>=4.0.0",
+  "python-dotenv>=1.0.0",
+]
 
 [project.scripts]
 sub_crew = "sub_crew.main:run"
@@ -12,6 +19,8 @@ run_crew = "sub_crew.main:run"
 train = "sub_crew.main:train"
 replay = "sub_crew.main:replay"
 test = "sub_crew.main:test"
+chat = "sub_crew.main:chat"
+api = "sub_crew.api:app"
 
 [build-system]
 requires = ["hatchling"]
